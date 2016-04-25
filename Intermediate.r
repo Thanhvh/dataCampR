@@ -572,3 +572,216 @@ lapply(temp, extremes_avg)
 
 # [[7]]
 # [1] 5
+
+# Create a function that returns min and max of a vector: extremes
+extremes <- function(x) {
+  c(min = min(x), max = max(x))
+}
+
+# Apply extremes() over temp with sapply()
+sapply(temp, extremes)
+#     [,1] [,2] [,3] [,4] [,5] [,6] [,7]
+# min   -1    5   -3   -2    2   -3    1
+# max    9   13    8    7    9    9    9
+
+# Apply extremes() over temp with lapply()
+lapply(temp, extremes)
+# [[1]]
+# min max 
+#  -1   9 
+
+# [[2]]
+# min max 
+#   5  13 
+
+# [[3]]
+# min max 
+#  -3   8 
+
+# [[4]]
+# min max 
+#  -2   7 
+
+# [[5]]
+# min max 
+#   2   9 
+
+# [[6]]
+# min max 
+#  -3   9 
+
+# [[7]]
+# min max 
+#   1   9 
+
+# Definition of below_zero()
+below_zero <- function(x) {
+  return(x[x < 0])
+}
+
+# Apply below_zero over temp using sapply(): freezing_s
+freezing_s <- sapply(temp, below_zero)
+# [[1]]
+# [1] -1
+
+# [[2]]
+# numeric(0)
+
+# [[3]]
+# [1] -1 -3
+
+# [[4]]
+# [1] -2
+
+# [[5]]
+# numeric(0)
+
+# [[6]]
+# [1] -3
+
+# [[7]]
+# numeric(0)
+
+# Apply below_zero over temp using lapply(): freezing_l
+freezing_l <- lapply(temp, below_zero)
+# [[1]]
+# [1] -1
+
+# [[2]]
+# numeric(0)
+
+# [[3]]
+# [1] -1 -3
+
+# [[4]]
+# [1] -2
+
+# [[5]]
+# numeric(0)
+
+# [[6]]
+# [1] -3
+
+# [[7]]
+# numeric(0)
+
+# Are freezing_s and freezing_l identical?
+identical(freezing_s, freezing_l)
+# TRUE
+
+# Definition of print_info()
+print_info <- function(x) {
+  cat("The average temperature is", mean(x), "\n")
+}
+
+# Apply print_info() over temp using lapply()
+xl <- lapply(temp, print_info)
+# The average temperature is 4.8 
+# The average temperature is 9 
+# The average temperature is 2.2 
+# The average temperature is 2.4 
+# The average temperature is 5.4 
+# The average temperature is 4.6 
+# The average temperature is 4.6 
+# [[1]]
+# NULL
+
+# [[2]]
+# NULL
+
+# [[3]]
+# NULL
+
+# [[4]]
+# NULL
+
+# [[5]]
+# NULL
+
+# [[6]]
+# NULL
+
+# [[7]]
+# NULL
+# Apply print_info() over temp using sapply()
+xs <- sapply(temp, print_info)
+# The average temperature is 4.8 
+# The average temperature is 9 
+# The average temperature is 2.2 
+# The average temperature is 2.4 
+# The average temperature is 5.4 
+# The average temperature is 4.6 
+# The average temperature is 4.6 
+# [[1]]
+# NULL
+
+# [[2]]
+# NULL
+
+# [[3]]
+# NULL
+
+# [[4]]
+# NULL
+
+# [[5]]
+# NULL
+
+# [[6]]
+# NULL
+
+# [[7]]
+# NULL
+
+# Great! Notice here that, quite surprisingly, 
+# sapply() does not simplify the list of NULL's.
+# That's because the 'vector-version' of a list of 
+# NULL's would simply be a NULL, which is no longer 
+# a vector with the same length as the input. 
+
+# Definition of basics()
+basics <- function(x) {
+  c(min = min(x), mean = mean(x), max = max(x))
+}
+
+# Apply basics() over temp using vapply()
+vapply(temp, basics, numeric(3))
+#      [,1] [,2] [,3] [,4] [,5] [,6] [,7]
+# min  -1.0    5 -3.0 -2.0  2.0 -3.0  1.0
+# mean  4.8    9  2.2  2.4  5.4  4.6  4.6
+# max   9.0   13  8.0  7.0  9.0  9.0  9.0
+
+# Convert to vapply() expression
+sapply(temp, max)
+vapply(temp, max, numeric(1))
+# [1]  9 13  8  7  9  9  9
+
+# Convert to vapply() expression
+sapply(temp, function(x, y) { mean(x) > y }, y = 5)
+vapply(temp, function(x, y) { mean(x) > y }, y = 5, logical(1))
+# [1] FALSE  TRUE FALSE FALSE  TRUE FALSE FALSE
+
+# work_todos and fun_todos have already been defined
+work_todos <- c("Schedule call with team", 
+                "Fix error in Recommendation System", 
+                "Respond to Marc from IT")
+fun_todos <- c("Sleep", "Make arrangements for summer trip")
+
+# Create a list: todos
+todos <- list(work_todos, fun_todos)
+
+# Sort the vectors inside todos alphabetically
+sapply(todos, sort)
+# [[1]]
+# [1] "Fix error in Recommendation System" "Respond to Marc from IT"           
+# [3] "Schedule call with team"           
+
+# [[2]]
+# [1] "Make arrangements for summer trip" "Sleep"
+
+#
+#
+#
+#
+#
+# Chapter 5 Utilities
