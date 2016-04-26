@@ -895,7 +895,7 @@ sub(".*\\s([0-9]+)\\snomination.*$", "\\1", awards)
 # %A: weekday (Wednesday)
 # %a: abbreviated weekday (Wed)
 # %B: month (January)
-# %b: abbreviated month (Jan
+# %b: abbreviated month (Jan)
 # Definition of character strings representing dates
 str1 <- "May 23, '96"
 str2 <- "2012-03-15"
@@ -914,3 +914,72 @@ format(date2, "%d")
 format(date3, "%b %Y")
 # [1] "Jan 2006"
 
+# %H: hours as a decimal number (00-23)
+# %M: minutes as a decimal number
+# %S: seconds as a decimal number
+# %T: shorthand notation for the typical format %H:%M:%S
+
+# Definition of character strings representing times
+str1 <- "May 23, '96 hours:23 minutes:01 seconds:45"
+str2 <- "2012-3-12 14:23:08"
+
+# Convert the strings to POSIXct objects: time1, time2
+time1 <- as.POSIXct(str1, format = "%B %d, '%y hours:%H minutes:%M seconds:%S")
+time2 <- as.POSIXct(str2, format = "%Y-%m-%d %T")
+
+# Convert times to formatted strings
+format(time1, format = "%M")
+# [1] "01"
+format(time2, format = "%I:%M %p" )
+# [1] "02:23 PM"
+
+# day1, day2, day3, day4 and day5 are already available in the workspace
+
+# Difference between last and first pizza day
+day5-day1
+# Time difference of 11 days
+
+# Create vector pizza
+pizza <- c(day1, day2, day3, day4, day5)
+
+# Create differences between consecutive pizza days: day_diff
+day_diff <- diff(pizza)
+# Time differences in days
+# [1]  -5  11 -13  18
+
+# Average period between two consecutive pizza days
+mean(day_diff)
+# Time difference of 2.75 days
+
+# login and logout are already defined in the workspace
+# Calculate the difference between login and logout: time_online
+time_online <- logout - login
+
+# Inspect the variable time_online
+time_online
+# Time differences in secs
+# [1] 2305.11818   34.18472  837.18182 2397.90153 1851.30411
+
+# Calculate the total time online
+sum(time_online)
+# Time difference of 7425.69 secs
+
+# Calculate the average time online
+mean(time_online)
+# Time difference of 1485.138 secs
+
+# Convert astro to vector of Date objects: astro_dates
+#        spring        summer          fall        winter 
+# "20-Mar-2015" "25-Jun-2015" "23-Sep-2015" "22-Dec-2015" 
+astro_dates <- as.Date(astro, format = "%d-%b-%Y")
+# [1] "2015-03-20" "2015-06-25" "2015-09-23" "2015-12-22"
+
+# Convert meteo to vector of Date objects: meteo_dates
+    #        spring            summer              fall            winter 
+    # "March 1, 15"      "June 1, 15" "September 1, 15"  "December 1, 15" 
+meteo_dates <- as.Date(meteo, format = "%B %d, %y")
+# [1] "2015-03-01" "2015-06-01" "2015-09-01" "2015-12-01"
+
+# Calculate the maximum absolute difference between astro_dates and meteo_dates
+max(abs(astro_dates-meteo_dates))
+# Time difference of 24 days
