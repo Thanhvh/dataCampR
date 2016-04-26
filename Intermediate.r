@@ -831,3 +831,46 @@ seq2 <- seq(1200,900,-7)
 sum(seq1,seq2)
 # [1] 87029
 
+# The emails vector has already been defined for you
+emails <- c("john.doe@ivyleague.edu", "education@world.gov", "dalai.lama@peace.org", 
+            "invalid.edu", "quant@bigdatacollege.edu", "cookie.monster@sesame.tv")
+
+# Use grepl() to match for "edu"
+grepl("edu",emails)
+# [1]  TRUE  TRUE FALSE  TRUE  TRUE FALSE
+
+# Use grep() to match for "edu", save result to hits
+hits <- grep("edu", emails)
+# [1] 1 2 4 5
+
+# Subset emails using hits
+emails[hits]
+# [1] "john.doe@ivyleague.edu"   "education@world.gov"     
+# [3] "invalid.edu"              "quant@bigdatacollege.edu"
+
+# @, because a valid email must contain an at-sign.
+# .*, which matches any character (.) zero or more times (*). 
+# Both the dot and the asterisk are metacharacters. You can use them to match any character between the at-sign and the ".edu" portion of an email address.
+# \\.edu$, to match the ".edu" part of the email at the end of the string. The \\ part escapes the dot: it tells R that you want to use the . as an actual character.
+
+# Use grepl() to match for .edu addresses more robustly
+grepl("@.*\\.edu$",emails)
+# [1]  TRUE FALSE FALSE FALSE  TRUE FALSE
+
+# Use grep() to match for .edu addresses more robustly, save result to hits
+hits <- grep("@.*\\.edu$",emails)
+
+# Subset emails using hits
+emails[hits]
+# [1] "john.doe@ivyleague.edu"   "quant@bigdatacollege.edu"
+
+# Use sub() to convert the email domains to datacamp.edu
+sub("@.*\\.edu$","@datacamp.edu",emails)
+# [1] "john.doe@datacamp.edu"    "education@world.gov"
+# [3] "dalai.lama@peace.org"     "invalid.edu"
+# [5] "quant@datacamp.edu"       "cookie.monster@sesame.tv"
+
+
+
+
+
