@@ -830,3 +830,4 @@ seq2 <- seq(1200,900,-7)
 # Calculate total sum of the sequences
 sum(seq1,seq2)
 # [1] 87029
+
