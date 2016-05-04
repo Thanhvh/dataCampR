@@ -231,20 +231,113 @@ plot(potatoes$texture, potatoes$moistness)
 #     na = "", skip = 0) 
 # NULL
 
+# The readxl package is already loaded
 
+# Read the first sheet of latitude.xlsx: latitude_1
+latitude_1 <- read_excel("latitude.xlsx", sheet=1)
 
+# Read the second sheet of latitude.xlsx: latitude_2
+latitude_2 <- read_excel("latitude.xlsx", sheet=2)
 
+# Put latitude_1 and latitude_2 in a list: lat_list
+lat_list <- list(latitude_1, latitude_2)
 
+# Display the structure of lat_list
+str(lat_list)
+# List of 2
+#  $ :Classes 'tbl_df', 'tbl' and 'data.frame':	246 obs. of  2 variables:
+#   ..$ country      : chr [1:246] "Afghanistan" "Akrotiri and Dhekelia" "Albania" "Algeria" ...
+#   ..$ latitude_1700: num [1:246] 34.6 34.6 41.3 36.7 -14.3 ...
+#  $ :Classes 'tbl_df', 'tbl' and 'data.frame':	246 obs. of  2 variables:
+#   ..$ country      : chr [1:246] "Afghanistan" "Akrotiri and Dhekelia" "Albania" "Algeria" ...
+#   ..$ latitude_1900: num [1:246] 34.6 34.6 41.3 36.7 -14.3 ...
 
+# The readxl package is already loaded
 
+# Read all Excel sheets with lapply(): lat_list
+lat_list <- lapply(excel_sheets("latitude.xlsx"), read_excel, path="latitude.xlsx")
 
+# Display the structure of lat_list
+str(lat_list)
+# List of 2
+#  $ :Classes 'tbl_df', 'tbl' and 'data.frame':	246 obs. of  2 variables:
+#   ..$ country      : chr [1:246] "Afghanistan" "Akrotiri and Dhekelia" "Albania" "Algeria" ...
+#   ..$ latitude_1700: num [1:246] 34.6 34.6 41.3 36.7 -14.3 ...
+#  $ :Classes 'tbl_df', 'tbl' and 'data.frame':	246 obs. of  2 variables:
+#   ..$ country      : chr [1:246] "Afghanistan" "Akrotiri and Dhekelia" "Albania" "Algeria" ...
+#   ..$ latitude_1900: num [1:246] 34.6 34.6 41.3 36.7 -14.3 ...
 
+# The readxl package is already loaded
 
+# Import the the first Excel sheet of latitude_nonames.xlsx (R gives names): latitude_3
+latitude_3 <- read_excel("latitude_nonames.xlsx", sheet=1, col_names = FALSE)
+  
+# Import the the first Excel sheet of latitude_nonames.xlsx (specify col_names): latitude_4
+latitude_4 <- read_excel("latitude_nonames.xlsx", sheet=1, col_names = c("country", "latitude"))
 
+# Print the summary of latitude_3
+summary(latitude_3)
+#      X0                  X1         
+# Length:246         Min.   :-51.750  
+# Class :character   1st Qu.:  2.557  
+# Mode  :character   Median : 16.755  
+#                    Mean   : 18.026  
+#                    3rd Qu.: 39.051  
+#                    Max.   : 78.000  
+#                    NA's   :4        
+# Print the summary of latitude_4
+summary(latitude_4)
+#   country             latitude      
+# Length:246         Min.   :-51.750  
+# Class :character   1st Qu.:  2.557  
+# Mode  :character   Median : 16.755  
+#                    Mean   : 18.026  
+#                    3rd Qu.: 39.051  
+#                    Max.   : 78.000  
+#                    NA's   :4        
 
+# The readxl package is already loaded
 
+# Import the second sheet of latitude.xlsx, skipping the first 21 rows: latitude_sel
+latitude_sel <- read_excel("latitude.xlsx", sheet = 2, skip = 21, col_names = FALSE)
 
+# Print out the first observation from latitude_sel
+head(latitude_sel,1)
+# Source: local data frame [1 x 2]
 
+#        X0     X1
+#     (chr)  (dbl)
+# 1 Belgium 50.837
+
+# Load the gdata package 
+library(gdata)
+
+# Import the second sheet of urbanpop.xls: urban_pop
+urban_pop <- read.xls("urbanpop.xls", sheet = "1967-1974")
+
+# Print the first 11 observations using head()
+head(urban_pop, 11)
+
+# The gdata package is alreaded loaded
+
+# Column names for urban_pop
+columns <- c("country", paste0("year_", 1967:1974))
+
+# Finish the read.xls call
+urban_pop <- read.xls("urbanpop.xls", sheet = 2, 
+                      skip = 50, header = FALSE, stringsAsFactors = FALSE,
+                      col.names = columns)
+
+# Print first 10 observation of urban_pop
+head(urban_pop,10)
+# 'data.frame':	224 obs. of  9 variables:
+#  $ country  : chr  "Congo, Dem. Rep." "Congo, Rep." "Cook Is" "Costa Rica" ...
+#  $ year_1967: num  5161472 450670 NA 621786 1243350 ...
+#  $ year_1968: num  5475208 473335 NA 649916 1330719 ...
+#  $ year_1969: num  5802069 497211 NA 678254 1424438 ...
+#  $ year_1970: num  6140904 522407 NA 706799 1525425 ...
+#  $ year_1971: num  6282834 549789 NA 733546 1638738 ...
+#  $ year_1972: num  6425372 578640 NA 760431 1760508 ...
 
 
 
