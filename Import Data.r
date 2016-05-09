@@ -339,6 +339,260 @@ head(urban_pop,10)
 #  $ year_1971: num  6282834 549789 NA 733546 1638738 ...
 #  $ year_1972: num  6425372 578640 NA 760431 1760508 ...
 
+# Add code to import data from all three sheets in urbanpop.xls
+path <- "urbanpop.xls"
+urban_sheet1 <- read.xls(path, sheet = 1, stringsAsFactors = FALSE)
+urban_sheet2 <- read.xls(path, sheet = 2, stringsAsFactors = FALSE)
+urban_sheet3 <- read.xls(path, sheet = 3, stringsAsFactors = FALSE)
+
+
+# Extend the cbind() call to include urban_sheet3: urban
+urban <- cbind(urban_sheet1, urban_sheet2[-1], urban_sheet3[-1])
+
+# Remove all rows with NAs from urban: urban_clean
+urban_clean <- na.omit(urban)
+
+# Print out a summary of urban_clean
+summary(urban_clean)
+# 'data.frame':	197 obs. of  53 variables:
+#  $ country: chr  "Afghanistan" "Albania" "Algeria" "Angola" ...
+#  $ X1960  : int  769308 494443 3293999 521205 21699 15224096 957974 24996 8375329 4560057 ...
+#  $ X1961  : num  814923 511803 3515148 548265 21635 ...
+#  $ X1962  : num  858522 529439 3739963 579695 21664 ...
+#  $ X1963  : num  903914 547377 3973289 612087 21741 ...
+#  $ X1964  : num  951226 565572 4220987 645262 21830 ...
+#  $ X1965  : num  1000582 583983 4488176 679109 21909 ...
+#  $ X1966  : num  1058743 602512 4649105 717833 22003 ...
+
+# install.packages("XLConnect")
+# library(XLConnect)
+# book <- loadWorkbook("test.xlsx")
+# getSheets(book)
+# "year_1990" "year_2000"
+# library(readxl)
+# excel_sheets("test.xlsx")
+# readWorksheet(book, sheet="year_2000", 
+#				startRow=3, endRow=4,
+#				startCol=2, header=FALSE)
+# writeWorksheet(book, date_to_add, sheet="year_2010")
+# saveWorkbook(book, "cities_extended.xlsx")
+
+# latitude.xlsx is available in your working directory
+
+# Load the XLConnect package
+library("XLConnect")
+
+# Build connection to latitude.xlsx: my_book
+my_book <- loadWorkbook("latitude.xlsx")
+
+# Print out the class of my_book
+class(my_book)
+# [1] "workbook"
+# attr(,"package")
+# [1] "XLConnect"
+
+# List the sheets in my_book
+getSheets(my_book)
+# [1] "1700" "1900"
+
+# Import the second sheet in my_book
+readWorksheet(my_book, sheet=2)
+# 'data.frame':	246 obs. of  2 variables:
+#  $ country      : chr  "Afghanistan" "Akrotiri and Dhekelia" "Albania" "Algeria" ...
+#  $ latitude_1900: num  34.6 34.6 41.3 36.7 -14.3 ...
+
+
+
+# latitude.xlsx is available in your working directory
+
+# Build connection to latitude.xlsx
+library(XLConnect)
+my_book <- loadWorkbook("latitude.xlsx")
+
+# Create data frame: summ
+dims1 <- dim(readWorksheet(my_book, 1))
+dims2 <- dim(readWorksheet(my_book, 2))
+summ <- data.frame(sheets = getSheets(my_book), 
+                   nrows = c(dims1[1], dims2[1]), 
+                   ncols = c(dims1[2], dims2[2]))
+
+# Add a worksheet to my_book, named "data_summary"
+createSheet(my_book,"data_summary")
+
+# Populate "data_summary" with summ
+writeWorksheet(my_book, summ, "data_summary")
+# function (object, data, sheet, startRow = 1, startCol = 1, header = TRUE, 
+#     rownames = NULL) 
+# NULL
+
+# Save workbook as latitude_with_summ.xlsx
+saveWorkbook(my_book,"latitude_with_summ.xlsx")
+# function (object, file) 
+# NULL
+
+#
+#
+#
+#
+# Chapter 3 Importing data from other sources
+
+# Load the haven package
+library(haven)
+
+# Import sales.sas7bdat: sales
+sales <- read_sas("sales.sas7bdat")
+
+# Display the structure of sales
+str(sales)
+# Classes 'tbl_df', 'tbl' and 'data.frame':	431 obs. of  4 variables:
+#  $ purchase: num  0 0 1 1 0 0 0 0 0 0 ...
+#  $ age     : num  41 47 41 39 32 32 33 45 43 40 ...
+#  $ gender  : chr  "Female" "Female" "Female" "Female" ...
+#  $ income  : chr  "Low" "Low" "Low" "Low" ...
+
+# haven is already loaded
+
+# Import the data from the URL: sugar
+sugar <- read_dta("http://assets.datacamp.com/course/importing_data_into_r/trade.dta")
+  
+# Structure of sugar
+str(sugar)
+# Classes 'tbl_df', 'tbl' and 'data.frame':	10 obs. of  5 variables:
+#  $ Date    :Class 'labelled'  atomic [1:10] 10 9 8 7 6 5 4 3 2 1
+#   .. ..- attr(*, "label")= chr "Date"
+#   .. ..- attr(*, "labels")= Named int [1:10] 1 2 3 4 5 6 7 8 9 10
+#   .. .. ..- attr(*, "names")= chr [1:10] "2004-12-31" "2005-12-31" "2006-12-31" "2007-12-31" ...
+#  $ Import  : atomic  37664782 16316512 11082246 35677943 9879878 1539992 28021 2652 7067402 1033672
+#   ..- attr(*, "label")= chr "Import"
+#  $ Weight_I: atomic  54029106 21584365 14526089 55034932 14806865 1749318 54567 3821 23722957 1964980
+#   ..- attr(*, "label")= chr "Weight_I"
+#  $ Export  : atomic  54505513 102700010 37935000 48515008 71486545 12311696 16489813 29273920 46497438 27131638
+#   ..- attr(*, "label")= chr "Export"
+#  $ Weight_E: atomic  93350013 158000010 88000000 112000005 131800000 18500014 39599944 102072480 147583380 78268792
+#   ..- attr(*, "label")= chr "Weight_E"
+
+# Convert values in Date column to dates
+sugar$Date <- as.Date(as_factor(sugar$Date))
+
+# Structure of sugar again
+str(sugar)
+# Classes 'tbl_df', 'tbl' and 'data.frame':	10 obs. of  5 variables:
+#  $ Date    : Date, format: "2013-12-31" "2012-12-31" ...
+#  $ Import  : atomic  37664782 16316512 11082246 35677943 9879878 1539992 28021 2652 7067402 1033672
+#   ..- attr(*, "label")= chr "Import"
+#  $ Weight_I: atomic  54029106 21584365 14526089 55034932 14806865 1749318 54567 3821 23722957 1964980
+#   ..- attr(*, "label")= chr "Weight_I"
+#  $ Export  : atomic  54505513 102700010 37935000 48515008 71486545 12311696 16489813 29273920 46497438 27131638
+#   ..- attr(*, "label")= chr "Export"
+#  $ Weight_E: atomic  93350013 158000010 88000000 112000005 131800000 18500014 39599944 102072480 147583380 78268792
+#   ..- attr(*, "label")= chr "Weight_E"
+
+# haven is already loaded
+
+# Import person.sav: traits
+traits <- read_sav("person.sav")
+
+# Summarize traits
+summary(traits)
+
+# Print out a subset
+subset(traits, Extroversion > 40 & Agreeableness > 40, SELECT=Neurotic:Conscientiousness )
+# Source: local data frame [8 x 4]
+
+#   Neurotic Extroversion Agreeableness Conscientiousness
+#      (dbl)        (dbl)         (dbl)             (dbl)
+# 1       38           43            49                29
+# 2       20           42            46                31
+# 3       18           42            49                31
+# 4       42           43            44                29
+# 5       30           42            51                24
+# 6       18           42            50                25
+# 7       27           45            55                23
+# 8       18           43            57                34
+
+# haven is already loaded
+
+# Import SPSS data from the URL: work
+work <- read_sav("http://assets.datacamp.com/course/importing_data_into_r/employee.sav")
+  
+# Display summary of work$GENDER
+summary(work$GENDER)
+# Length     Class      Mode 
+#    474  labelled character 
+
+# Convert work$GENDER to a factor 
+work$GENDER <- as_factor(work$GENDER)
+
+
+# Display summary of work$GENDER again
+summary(work$GENDER)
+# Female   Male 
+#    216    258 
+
+# Load the foreign package
+library(foreign)
+
+# Import florida.dta and name the resulting data frame florida
+florida <- read.dta("florida.dta")
+
+# Check tail() of florida
+tail(florida)
+
+# Load the foreign package
+library(foreign)
+
+# Import florida.dta and name the resulting data frame florida
+florida <- read.dta("florida.dta")
+
+# Check tail() of florida
+tail(florida)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
