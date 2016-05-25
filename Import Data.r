@@ -565,26 +565,193 @@ str(edu_equal_2)
 edu_equal_3 <- read.dta(path, convert.underscore = TRUE)
 str(edu_equal_3)
   
+#
+#
+#
+#
+# Chapter 4 Importing data from relational databses
 
+# Load the DBI package
+library(DBI)
 
+# Connect to the MySQL database: con
+con <- dbConnect(RMySQL::MySQL(), 
+                 dbname = "tweater", 
+                 host = "courses.csrrinzqubik.us-east-1.rds.amazonaws.com", 
+                 port = 3306,
+                 user = "student",
+                 password = "datacamp")
 
+# Build a vector of table names: tables
+tables <- dbListTables(con)
 
+# Display structure of tables
+str(tables)
+# chr [1:4] "comments" "employees" "tweats" "users"
 
+# Print users
+print(users)
+#   id      name     login
+# 1  1 elisabeth  elismith
+# 2  2      mike     mikey
+# 3  3      thea   teatime
+# 4  4    thomas tomatotom
+# 5  5    oliver olivander
+# 6  6      kate  katebenn
+# 7  7    anjali    lianja
 
+# Import and print the tweats table from tweater: tweats
+tweats <- dbReadTable(con,"tweats")
+print(tweats)
+#   id user_id
+# 1 75       3
+# 2 88       4
+# 3 77       6
+# 4 87       5
+# 5 49       1
+# 6 24       7
+#                                                                  post
+# 1                                       break egg. bake egg. eat egg.
+# 2                           wash strawberries. add ice. blend. enjoy.
+# 3                       2 slices of bread. add cheese. grill. heaven.
+# 4               open and crush avocado. add shrimps. perfect starter.
+# 5 nachos. add tomato sauce, minced meat and cheese. oven for 10 mins.
+# 6                              just eat an apple. simply and healthy.
+#         date
+# 1 2015-09-05
+# 2 2015-09-14
+# 3 2015-09-21
+# 4 2015-09-22
+# 5 2015-09-22
+# 6 2015-09-24
 
+# Import and print the comments table from tweater: comments
+comments <- dbReadTable(con,"comments")
+print(comments)
+#      id tweat_id user_id            message
+# 1  1022       87       7              nice!
+# 2  1000       77       7             great!
+# 3  1011       49       5            love it
+# 4  1012       87       1   awesome! thanks!
+# 5  1010       88       6              yuck!
+# 6  1026       77       4      not my thing!
+# 7  1004       49       1  this is fabulous!
+# 8  1030       75       6           so easy!
+# 9  1025       88       2             oh yes
+# 10 1007       49       3           serious?
+# 11 1020       77       1 couldn't be better
+# 12 1014       77       1       saved my day
 
+# Import post column of tweats where date is higher than "2015-09-21": latest
+latest <- dbGetQuery(con, "SELECT post FROM tweats WHERE date > '2015-09-21'")
+#                                                                  post
+# 1               open and crush avocado. add shrimps. perfect starter.
+# 2 nachos. add tomato sauce, minced meat and cheese. oven for 10 mins.
+# 3                              just eat an apple. simply and healthy.
 
+# Import tweat_id column of comments where user_id is 1: elisabeth
+elisabeth <- dbGetQuery(con, "SELECT tweat_id FROM comments WHERE user_id = 1")
+#   tweat_id
+# 1       87
+# 2       49
+# 3       77
+# 4       77
 
+# Create data frame specific
+specific <- dbGetQuery(con, "SELECT message FROM comments WHERE user_id > 4 and tweat_id = 77")
+#   message
+# 1  great!
 
+# Create data frame short
+short <- dbGetQuery(con, "SELECT id, name FROM users WHERE char_length(name) < 5")
+#   id name
+# 1  2 mike
+# 2  3 thea
+# 3  6 kate
 
+dbGetQuery(con,"SELECT post, message FROM tweats INNER JOIN comments on tweats.id = tweat_id WHERE tweat_id = 77")
+#                                            post            message
+# 1 2 slices of bread. add cheese. grill. heaven.             great!
+# 2 2 slices of bread. add cheese. grill. heaven.      not my thing!
+# 3 2 slices of bread. add cheese. grill. heaven. couldn't be better
+# 4 2 slices of bread. add cheese. grill. heaven.       saved my day
 
+# Send query to the database
+res <- dbSendQuery(con, "SELECT * FROM comments WHERE user_id > 4")
 
+# Use dbFetch() twice
+dbFetch(res, n=2)
+#     id tweat_id user_id message
+# 1 1022       87       7   nice!
+# 2 1000       77       7  great!
 
+dbFetch(res)
+#     id tweat_id user_id  message
+# 1 1011       49       5  love it
+# 2 1010       88       6    yuck!
+# 3 1030       75       6 so easy!
 
+# Clear res
+dbClearResult(res)
+# [1] TRUE
 
+# Create the data frame  long_tweats
+long_tweats <- dbGetQuery(con, "SELECT post, date FROM tweats WHERE char_length(post) > 40")
+#                                                                  post
+# 1                           wash strawberries. add ice. blend. enjoy.
+# 2                       2 slices of bread. add cheese. grill. heaven.
+# 3               open and crush avocado. add shrimps. perfect starter.
+# 4 nachos. add tomato sauce, minced meat and cheese. oven for 10 mins.
+#         date
+# 1 2015-09-14
+# 2 2015-09-21
+# 3 2015-09-22
+# 4 2015-09-22
 
+# Disconnect from the database
+dbDisconnect(con)
+# [1] TRUE
 
+#
+#
+#
+#
+# Chapter 5 Importing data from web
 
+# Load the readr package
+library(readr)
+
+# Import the csv file: pools
+url_csv <- "http://s3.amazonaws.com/assets.datacamp.com/course/importing_data_into_r/swimming_pools.csv"
+pools <- read_csv(url_csv)
+
+# Import the txt file: potatoes
+url_delim <- "http://s3.amazonaws.com/assets.datacamp.com/course/importing_data_into_r/potatoes.txt"
+potatoes <- read_tsv(url_delim)
+
+# Import the file using read.csv(): pools1
+pools1 <- read.csv(url_csv)
+
+# Load the readr package
+library(readr)
+
+# Import the file using read_csv(): pools2
+pools2 <- read_csv(url_csv)
+
+# Print the structure of pools1 and pools2
+str(pools1)
+# 'data.frame':	20 obs. of  4 variables:
+#  $ Name     : Factor w/ 20 levels "Acacia Ridge Leisure Centre",..: 1 2 3 4 5 6 19 7 8 9 ...
+#  $ Address  : Factor w/ 20 levels "1 Fairlead Crescent, Manly",..: 5 20 18 10 9 11 6 15 12 17 ...
+#  $ Latitude : num  -27.6 -27.6 -27.6 -27.5 -27.4 ...
+#  $ Longitude: num  153 153 153 153 153 ...
+
+str(pools2)
+# Classes 'tbl_df', 'tbl' and 'data.frame':	20 obs. of  4 variables:
+#  $ Name     : chr  "Acacia Ridge Leisure Centre" "Bellbowrie Pool" "Carole Park" "Centenary Pool (inner City)" ...
+#  $ Address  : chr  "1391 Beaudesert Road, Acacia Ridge" "Sugarwood Street, Bellbowrie" "Cnr Boundary Road and Waterford Road Wacol" "400 Gregory Terrace, Spring Hill" ...
+#  $ Latitude : num  -27.6 -27.6 -27.6 -27.5 -27.4 ...
+#  $ Longitude: num  153 153 153 153 153 ...
 
 
 
