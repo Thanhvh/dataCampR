@@ -570,6 +570,10 @@ str(edu_equal_3)
 #
 #
 # Chapter 4 Importing data from relational databses
+# MySQL - RMySQL
+# PostgresSQL - RPostgresSQL
+# Oracle DB - ROracle
+# DBI package
 
 # Load the DBI package
 library(DBI)
@@ -581,6 +585,10 @@ con <- dbConnect(RMySQL::MySQL(),
                  port = 3306,
                  user = "student",
                  password = "datacamp")
+
+# Print out con
+print(con)
+# <MySQLConnection:0,3>
 
 # Build a vector of table names: tables
 tables <- dbListTables(con)
