@@ -761,21 +761,220 @@ str(pools2)
 #  $ Latitude : num  -27.6 -27.6 -27.6 -27.5 -27.4 ...
 #  $ Longitude: num  153 153 153 153 153 ...
 
+# Load the readxl and gdata package
+library(readxl)
+library(gdata)
 
 
+# Specification of url: url_xls
+url_xls <- "http://s3.amazonaws.com/assets.datacamp.com/course/importing_data_into_r/latitude.xls"
+
+# Import the .xls file with gdata: excel_gdata
+excel_gdata <- read.xls(url_xls)
+# 'data.frame': 246 obs. of  2 variables:
+#  $ country: Factor w/ 246 levels "Afghanistan",..: 1 2 3 4 5 6 7 8 9 10 ...
+#  $ X1700  : num  34.6 34.6 41.3 36.7 -14.3 ...
+
+# Download file behind URL, name it local_latitude.xls
+download.file(url_xls, "local_latitude.xls")
+
+# Import the local .xls file with readxl: excel_readxl
+excel_readxl <- read_excel("local_latitude.xls")
+# Classes 'tbl_df', 'tbl' and 'data.frame': 246 obs. of  2 variables:
+#  $ country    : chr  "Afghanistan" "Akrotiri and Dhekelia" "Albania" "Algeria" ...
+#  $ 1700.000000: num  34.6 34.6 41.3 36.7 -14.3 ...
+
+# https URL to the wine RData file.
+url_rdata <- "https://s3.amazonaws.com/assets.datacamp.com/course/importing_data_into_r/wine.RData"
+
+# Download the wine file to your working directory
+download.file(url_rdata, "wine_local.RData")
+
+# Load the wine data into your workspace using load()
+load("wine_local.RData")
+
+# Print out the summary of the wine data
+summary(wine)
+ #    Alcohol        Malic acid        Ash        Alcalinity of ash
+ # Min.   :11.03   Min.   :0.74   Min.   :1.360   Min.   :10.60    
+ # 1st Qu.:12.36   1st Qu.:1.60   1st Qu.:2.210   1st Qu.:17.20    
+ # Median :13.05   Median :1.87   Median :2.360   Median :19.50    
+ # Mean   :12.99   Mean   :2.34   Mean   :2.366   Mean   :19.52    
+ # 3rd Qu.:13.67   3rd Qu.:3.10   3rd Qu.:2.560   3rd Qu.:21.50    
+ # Max.   :14.83   Max.   :5.80   Max.   :3.230   Max.   :30.00    
+ #   Magnesium      Total phenols     Flavanoids    Nonflavanoid phenols
+ # Min.   : 70.00   Min.   :0.980   Min.   :0.340   Min.   :0.1300      
+ # 1st Qu.: 88.00   1st Qu.:1.740   1st Qu.:1.200   1st Qu.:0.2700      
+ # Median : 98.00   Median :2.350   Median :2.130   Median :0.3400      
+ # Mean   : 99.59   Mean   :2.292   Mean   :2.023   Mean   :0.3623      
+ # 3rd Qu.:107.00   3rd Qu.:2.800   3rd Qu.:2.860   3rd Qu.:0.4400      
+ # Max.   :162.00   Max.   :3.880   Max.   :5.080   Max.   :0.6600      
+ # Proanthocyanins Color intensity       Hue           Proline      
+ # Min.   :0.410   Min.   : 1.280   Min.   :1.270   Min.   : 278.0  
+ # 1st Qu.:1.250   1st Qu.: 3.210   1st Qu.:1.930   1st Qu.: 500.0  
+ # Median :1.550   Median : 4.680   Median :2.780   Median : 672.0  
+ # Mean   :1.587   Mean   : 5.055   Mean   :2.604   Mean   : 745.1  
+ # 3rd Qu.:1.950   3rd Qu.: 6.200   3rd Qu.:3.170   3rd Qu.: 985.0  
+ # Max.   :3.580   Max.   :13.000   Max.   :4.000   Max.   :1680.0 
+
+# Load the httr package
+library(httr)
+
+# Get the url, save response to resp
+url <- "http://www.example.com/"
+resp <- GET(url)
+
+# Print resp
+print(resp)
+# Response [http://www.example.com/]
+#   Date: 2016-05-31 05:32
+#   Status: 200
+#   Content-Type: text/html
+#   Size: 1.27 kB
+# No encoding supplied: defaulting to UTF-8.
+# <!doctype html>
+# <html>
+# <head>
+#     <title>Example Domain</title>
+
+#     <meta charset="utf-8" />
+#     <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+#     <meta name="viewport" content="width=device-width, initial-scale=1" />
+#     <style type="text/css">
+#     body {
+# ...
+
+# Get the raw content of resp
+raw_content <- content(resp, as = "raw")
+
+# Print the head of content
+head(raw_content)
+# [1] 3c 21 64 6f 63 74
+
+# httr is already loaded
+
+# Get the url
+url <- "https://www.omdbapi.com/?t=Annie+Hall&y=&plot=short&r=json"
+resp <- GET(url)
+
+# Print resp
+print(resp)
+# Response [https://www.omdbapi.com/?t=Annie+Hall&y=&plot=short&r=json]
+#   Date: 2016-05-31 05:34
+#   Status: 200
+#   Content-Type: application/json; charset=utf-8
+#   Size: 662 B
+
+# Print content of resp as text
+content(resp, as = "text")
+# [1] "{\"Title\":\"Annie Hall\",\"Year\":\"1977\",\"Rated\":\"PG\",\"Released\":\"20 Apr 1977\",\"Runtime\":\"93 min\",\"Genre\":\"Comedy, Romance\",\"Director\":\"Woody Allen\",\"Writer\":\"Woody Allen, Marshall Brickman\",\"Actors\":\"Woody Allen, Diane Keaton, Tony Roberts, Carol Kane\",\"Plot\":\"Neurotic New York comedian Alvy Singer falls in love with the ditzy Annie Hall.\",\"Language\":\"English, German\",\"Country\":\"USA\",\"Awards\":\"Won 4 Oscars. Another 26 wins & 8 nominations.\",\"Poster\":\"http://ia.media-imdb.com/images/M/MV5BMTU1NDM2MjkwM15BMl5BanBnXkFtZTcwODU3OTYwNA@@._V1_SX300.jpg\",\"Metascore\":\"N/A\",\"imdbRating\":\"8.1\",\"imdbVotes\":\"188,690\",\"imdbID\":\"tt0075686\",\"Type\":\"movie\",\"Response\":\"True\"}"
 
 
+# Print content of resp
+content(resp)
+# $Title
+# [1] "Annie Hall"
+
+# $Year
+# [1] "1977"
+
+# $Rated
+# [1] "PG"
+
+# $Released
+# [1] "20 Apr 1977"
+
+# $Runtime
+# [1] "93 min"
+
+# $Genre
+# [1] "Comedy, Romance"
+
+# $Director
+# [1] "Woody Allen"
+
+# $Writer
+# [1] "Woody Allen, Marshall Brickman"
+
+# $Actors
+# [1] "Woody Allen, Diane Keaton, Tony Roberts, Carol Kane"
+
+# $Plot
+# [1] "Neurotic New York comedian Alvy Singer falls in love with the ditzy Annie Hall."
+
+# $Language
+# [1] "English, German"
+
+# $Country
+# [1] "USA"
+
+# $Awards
+# [1] "Won 4 Oscars. Another 26 wins & 8 nominations."
+
+# $Poster
+# [1] "http://ia.media-imdb.com/images/M/MV5BMTU1NDM2MjkwM15BMl5BanBnXkFtZTcwODU3OTYwNA@@._V1_SX300.jpg"
+
+# $Metascore
+# [1] "N/A"
+
+# $imdbRating
+# [1] "8.1"
+
+# $imdbVotes
+# [1] "188,690"
+
+# $imdbID
+# [1] "tt0075686"
+
+# $Type
+# [1] "movie"
+
+# $Response
+# [1] "True"
+
+# Load the jsonlite package
+library(jsonlite)
+
+# Convert wine_json to a list: wine
+wine_json <- '{"name":"Chateau Migraine", "year":1997, "alcohol_pct":12.4, "color":"red", "awarded":false}'
+
+wine <- fromJSON(wine_json)
 
 
+# Import Quandl data: quandl_data
+quandl_url <- "http://www.quandl.com/api/v1/datasets/IWS/INTERNET_INDIA.json?auth_token=i83asDsiWUUyfoypkgMz"
+
+quandl_data <- fromJSON(quandl_url)
 
 
-
-
-
-
-
-
-
+# Print structure of wine and quandl_data
+str(wine)
+# List of 5
+#  $ name       : chr "Chateau Migraine"
+#  $ year       : int 1997
+#  $ alcohol_pct: num 12.4
+#  $ color      : chr "red"
+#  $ awarded    : logi FALSE
+str(quandl_data)
+# List of 18
+#  $ errors      : Named list()
+#  $ id          : int 2351831
+#  $ source_name : chr "Internet World Stats"
+#  $ source_code : chr "IWS"
+#  $ code        : chr "INTERNET_INDIA"
+#  $ name        : chr "India Internet Usage"
+#  $ urlize_name : chr "India-Internet-Usage"
+#  $ display_url : chr "http://www.internetworldstats.com/asia/in.htm"
+#  $ description : chr "Internet Usage and Population Statistics"
+#  $ updated_at  : chr "2016-01-01T04:23:55.235Z"
+#  $ frequency   : chr "annual"
+#  $ from_date   : chr "1998-12-31"
+#  $ to_date     : chr "2012-12-31"
+#  $ column_names: chr [1:4] "YEAR" "Users" "Population" "% Pen."
+#  $ private     : logi FALSE
+#  $ type        : NULL
+#  $ premium     : logi FALSE
+#  $ data        : chr [1:13, 1:4] "2012-12-31" "2010-12-31" "2009-12-31" "2007-12-31" ...
 
 
 
