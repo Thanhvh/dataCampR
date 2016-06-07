@@ -132,14 +132,49 @@ DT2[,.(C = tail(C,2)), by = .(A)]
 # 3: a 2
 # 4: a 8
 
+# The data.table package has already been loaded
+# Build DT
+set.seed(1L)
+DT <- data.table(A = rep(letters[2:1], each = 4L), 
+                 B = rep(1:4, each = 2L), 
+                 C = sample(8)) 
 
+# In the previous section, you calculated DT2 by taking the cumulative sum of C while grouping by A,B. Next, you selected from DT2 the last two values of C while grouping by A alone. Do this again, but this time use the concept of chaining instead. Simply print out the result of the chaining.
+# Perform operation using chaining
+DT[,.(C = cumsum(C)), by = .(A, B)][,.(C = tail(C,2)), by = .(A)]
+#    A C
+# 1: b 4
+# 2: b 9
+# 3: a 2
+# 4: a 8
 
+# The data.table DT is loaded in your workspace
 
+# Perform chained operations on DT
+DT[, .(Sepal.Length = median(Sepal.Length),
+ Sepal.Width = median(Sepal.Width),
+ Petal.Length = median(Petal.Length),
+ Petal.Width = median(Petal.Width)),
+ by = Species][order(Species, decreasing = TRUE)]
+#       Species Sepal.Length Sepal.Width Petal.Length Petal.Width
+# 1:  virginica          6.5         3.0         5.55         2.0
+# 2: versicolor          5.9         2.8         4.35         1.3
+# 3:     setosa          5.0         3.4         1.50         0.2
 
+# Print out the pre-loaded data.table DT
+DT
 
+# Mean of columns
+DT[,lapply(.SD, mean), by = x]
+#    x        y        z
+# 1: 2 6.500000 7.500000
+# 2: 1 7.666667 8.666667
 
-
-
+# Median of columns
+DT[,lapply(.SD, median), by = x]
+#    x y z
+# 1: 2 7 8
+# 2: 1 7 8
 
 
 
